@@ -5,7 +5,7 @@ import time
 from datetime import datetime
 import streamlit as st
 from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
-from av import VideoFrame  # これを追加
+from av import VideoFrame
 
 # タイムラプス保存用ディレクトリ
 SAVE_DIR = "timelapse_images"
@@ -31,7 +31,7 @@ class VideoProcessor(VideoProcessorBase):
             self.last_captured_time = current_time
 
         # 表示用の映像を返す（そのまま）
-        return VideoFrame.from_ndarray(img, format="bgr24")  # 修正点
+        return VideoFrame.from_ndarray(img, format="bgr24")
 
 # Streamlitアプリ
 st.title("タイムラプスカメラアプリ")
@@ -40,11 +40,18 @@ st.sidebar.header("設定")
 # ユーザー設定
 capture_interval = st.sidebar.number_input("撮影間隔 (秒)", min_value=1, max_value=3600, value=5, step=1)
 
+# カメラデバイスを指定
+device_index = 0  # 0はデフォルトカメラ、他のデバイスはインデックスを変更
+media_stream_constraints = {
+    "video": {"device": device_index, "width": 640, "height": 480},
+    "audio": False
+}
+
 # WebRTCストリームの設定
 ctx = webrtc_streamer(
     key="example",
     video_processor_factory=VideoProcessor,
-    media_stream_constraints={"video": True, "audio": False},
+    media_stream_constraints=media_stream_constraints,
     mode=WebRtcMode.SENDRECV,
 )
 
