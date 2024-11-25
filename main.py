@@ -74,4 +74,34 @@ if st.button("タイムラプス動画を生成"):
         video.release()
 
         st.success(f"タイムラプス動画を生成しました: {output_video}")
+        
+        # 動画を表示
         st.video(output_video)
+
+        # ダウンロードボタンを作成
+        with open(output_video, "rb") as file:
+            btn = st.download_button(
+                label="タイムラプス動画をダウンロード",
+                data=file,
+                file_name="timelapse.mp4",
+                mime="video/mp4",
+            )
+
+# 画像をダウンロードできるようにする
+st.subheader("保存されたタイムラプス画像")
+image_files = sorted(
+    [img for img in os.listdir(SAVE_DIR) if img.endswith(".jpg")]
+)
+
+if image_files:
+    for image_file in image_files:
+        image_path = os.path.join(SAVE_DIR, image_file)
+        with open(image_path, "rb") as img_file:
+            st.download_button(
+                label=f"{image_file} をダウンロード",
+                data=img_file,
+                file_name=image_file,
+                mime="image/jpeg",
+            )
+else:
+    st.warning("タイムラプス画像が保存されていません。")
