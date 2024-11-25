@@ -84,19 +84,3 @@ camera = cv2.VideoCapture(0)
 if not camera.isOpened():
     st.error("カメラが接続されていません。デバイスIDを確認してください。")
     for index in range(5):
-
-import cv2
-
-index = 0
-while True:
-    cap = cv2.VideoCapture(index)
-    if not cap.isOpened():
-        break
-    print(f"Camera found at index {index}")
-    cap.release()
-    index += 1
-        test_camera = cv2.VideoCapture(index)
-        if test_camera.isOpened():
-            st.write(f"カメラが見つかりました: デバイスID {index}")
-            test_camera.release()
-    st.stop()
