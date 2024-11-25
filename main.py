@@ -4,7 +4,7 @@ import av
 import time
 from datetime import datetime
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer, VideoProcessorBase
+from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
 
 # タイムラプス保存用ディレクトリ
 SAVE_DIR = "timelapse_images"
@@ -44,17 +44,18 @@ ctx = webrtc_streamer(
     key="example",
     video_processor_factory=VideoProcessor,
     media_stream_constraints={"video": True, "audio": False},
+    mode=WebRtcMode.SENDRECV,  # カメラとビデオストリームを送受信モードで設定
 )
+
+# WebRTC ストリームが開始されているか確認
+if ctx.state.playing:
+    st.success("カメラが正常に接続され、映像が表示されています。")
+else:
+    st.error("カメラが接続されていないか、アクセスできません。カメラの設定を確認してください。")
 
 # VideoProcessorに撮影間隔を反映
 if ctx.video_processor:
     ctx.video_processor.capture_interval = capture_interval
-
-# カメラプレビューが表示されない場合の確認ポイント
-if ctx.video_source is None:
-    st.error("カメラが接続されていないか、アクセスできません。カメラの設定を確認してください。")
-else:
-    st.success("カメラが正常に接続され、映像が表示されています。")
 
 # タイムラプス動画の生成ボタン
 if st.button("タイムラプス動画を生成"):
