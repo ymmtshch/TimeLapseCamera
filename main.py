@@ -20,7 +20,7 @@ video_duration = st.sidebar.number_input("タイムラプスの長さ (秒)", mi
 fps = st.sidebar.number_input("タイムラプスFPS", min_value=1, max_value=60, value=10, step=1)
 
 # Webカメラの初期化
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(1)
 if not camera.isOpened():
     st.error("カメラが接続されていません。Logicool HD 720pが正しく接続されていることを確認してください。")
 else:
