@@ -40,25 +40,13 @@ st.sidebar.header("設定")
 # ユーザー設定
 capture_interval = st.sidebar.number_input("撮影間隔 (秒)", min_value=1, max_value=3600, value=5, step=1)
 
-# カメラデバイスを選択
-st.sidebar.header("カメラデバイス選択")
-video_devices = webrtc_streamer.list_video_devices()
-
-if len(video_devices) > 0:
-    selected_device = st.sidebar.selectbox("カメラを選択", video_devices)
-else:
-    selected_device = None
-    st.error("カメラデバイスが見つかりません。")
-
 # WebRTCストリームの設定
-ctx = None
-if selected_device:
-    ctx = webrtc_streamer(
-        key="example",
-        video_processor_factory=VideoProcessor,
-        media_stream_constraints={"video": {"device": selected_device}, "audio": False},
-        mode=WebRtcMode.SENDRECV,
-    )
+ctx = webrtc_streamer(
+    key="example",
+    video_processor_factory=VideoProcessor,
+    media_stream_constraints={"video": True, "audio": False},
+    mode=WebRtcMode.SENDRECV,
+)
 
 # WebRTC ストリームが開始されているか確認
 if ctx and ctx.state.playing:
