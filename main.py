@@ -4,8 +4,8 @@ import av
 import time
 from datetime import datetime
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode, VideoFrame
-import pyaudio
+from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
+from av import VideoFrame  # これを追加
 
 # タイムラプス保存用ディレクトリ
 SAVE_DIR = "timelapse_images"
@@ -31,8 +31,7 @@ class VideoProcessor(VideoProcessorBase):
             self.last_captured_time = current_time
 
         # 表示用の映像を返す（そのまま）
-        return VideoFrame.from_ndarray(img, format="bgr24")
-
+        return VideoFrame.from_ndarray(img, format="bgr24")  # 修正点
 
 # Streamlitアプリ
 st.title("タイムラプスカメラアプリ")
