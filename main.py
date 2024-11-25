@@ -4,7 +4,8 @@ import av
 import time
 from datetime import datetime
 import streamlit as st
-from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode
+from streamlit_webrtc import webrtc_streamer, VideoProcessorBase, WebRtcMode, VideoFrame
+import pyaudio
 
 # タイムラプス保存用ディレクトリ
 SAVE_DIR = "timelapse_images"
@@ -30,7 +31,8 @@ class VideoProcessor(VideoProcessorBase):
             self.last_captured_time = current_time
 
         # 表示用の映像を返す（そのまま）
-        return av.VideoFrame.from_ndarray(img, format="bgr24")
+        return VideoFrame.from_ndarray(img, format="bgr24")
+
 
 # Streamlitアプリ
 st.title("タイムラプスカメラアプリ")
@@ -39,22 +41,34 @@ st.sidebar.header("設定")
 # ユーザー設定
 capture_interval = st.sidebar.number_input("撮影間隔 (秒)", min_value=1, max_value=3600, value=5, step=1)
 
+# カメラデバイスを選択
+st.sidebar.header("カメラデバイス選択")
+video_devices = webrtc_streamer.list_video_devices()
+
+if len(video_devices) > 0:
+    selected_device = st.sidebar.selectbox("カメラを選択", video_devices)
+else:
+    selected_device = None
+    st.error("カメラデバイスが見つかりません。")
+
 # WebRTCストリームの設定
-ctx = webrtc_streamer(
-    key="example",
-    video_processor_factory=VideoProcessor,
-    media_stream_constraints={"video": True, "audio": False},
-    mode=WebRtcMode.SENDRECV,  # カメラとビデオストリームを送受信モードで設定
-)
+ctx = None
+if selected_device:
+    ctx = webrtc_streamer(
+        key="example",
+        video_processor_factory=VideoProcessor,
+        media_stream_constraints={"video": {"device": selected_device}, "audio": False},
+        mode=WebRtcMode.SENDRECV,
+    )
 
 # WebRTC ストリームが開始されているか確認
-if ctx.state.playing:
+if ctx and ctx.state.playing:
     st.success("カメラが正常に接続され、映像が表示されています。")
 else:
     st.error("カメラが接続されていないか、アクセスできません。カメラの設定を確認してください。")
 
 # VideoProcessorに撮影間隔を反映
-if ctx.video_processor:
+if ctx and ctx.video_processor:
     ctx.video_processor.capture_interval = capture_interval
 
 # タイムラプス動画の生成ボタン
