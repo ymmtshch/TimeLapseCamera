@@ -80,7 +80,12 @@ if st.button("撮影開始"):
 # カメラ解放 (アプリ終了時)
 st.sidebar.button("終了", on_click=camera.release)
 
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(1)
 if not camera.isOpened():
     st.error("カメラが接続されていません。デバイスIDを確認してください。")
     for index in range(5):
+        test_camera = cv2.VideoCapture(index)
+        if test_camera.isOpened():
+            st.write(f"カメラが見つかりました: デバイスID {index}")
+            test_camera.release()
+    st.stop()
