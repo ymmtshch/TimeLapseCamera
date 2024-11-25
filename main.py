@@ -22,7 +22,7 @@ fps = st.sidebar.number_input("タイムラプスFPS", min_value=1, max_value=60
 # Webカメラの初期化
 camera = cv2.VideoCapture(0)
 if not camera.isOpened():
-    st.error("カメラが接続されていません。Logicool C270が正しく接続されていることを確認してください。")
+    st.error("カメラが接続されていません。Logicool HD 720pが正しく接続されていることを確認してください。")
 else:
     st.success("カメラが正常に動作しています。")
 
