@@ -50,6 +50,12 @@ ctx = webrtc_streamer(
 if ctx.video_processor:
     ctx.video_processor.capture_interval = capture_interval
 
+# カメラプレビューが表示されない場合の確認ポイント
+if ctx.video_source is None:
+    st.error("カメラが接続されていないか、アクセスできません。カメラの設定を確認してください。")
+else:
+    st.success("カメラが正常に接続され、映像が表示されています。")
+
 # タイムラプス動画の生成ボタン
 if st.button("タイムラプス動画を生成"):
     st.info("タイムラプス動画を生成中...")
