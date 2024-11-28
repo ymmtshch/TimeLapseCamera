@@ -3,4 +3,3 @@ streamlit-webrtc>=0.45.0
 opencv-python-headless>=4.8.1
 av>=10.0.0
 numpy>=1.23.5
-python>=3.9.*
