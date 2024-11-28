@@ -39,6 +39,15 @@ st.sidebar.header("設定")
 # 撮影間隔の設定
 capture_interval = st.sidebar.number_input("撮影間隔（秒）", min_value=1, max_value=3600, value=5)
 
+# WebRTCストリームの設定（STUNサーバーを設定）#追加
+rtc_configuration = {
+    "iceServers": [
+        {"urls": ["stun:stun.l.google.com:19302"]},  # Google STUNサーバー
+        {"urls": ["stun:stun1.l.google.com:19302"]}, # 追加のGoogle STUNサーバー
+        {"urls": ["stun:stun2.l.google.com:19302"]}  # 追加のGoogle STUNサーバー
+    ]
+}
+
 # WebRTCストリームの開始
 ctx = webrtc_streamer(
     key="timelapse",
