@@ -48,7 +48,7 @@
 ```bash
 cd フォルダのパス
 ```
-#### 例: C:\Users\YourName\Documents\timelapse_app
+例: `C:\Users\YourName\Documents\timelapse_app`
 
 ### 5. 必要なライブラリをインストールする
 以下のコマンドを実行して、アプリに必要なライブラリをインストールします。
