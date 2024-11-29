@@ -1,9 +1,12 @@
-![](https://img.shields.io/github/created-at/ymmtshch/TimeLapseCamera)
-![](https://img.shields.io/github/languages/code-size/ymmtshch/TimeLapseCamera)
-![](https://img.shields.io/github/languages/top/ymmtshch/TimeLapseCamera)
-![](https://img.shields.io/github/license/ymmtshch/TimeLapseCamera)
 ![Python](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue)
-
+![License](https://img.shields.io/badge/license-MIT-green)
+![Streamlit](https://img.shields.io/badge/streamlit-%E2%AC%9B-orange)
+![dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen)
+![WebRTC](https://img.shields.io/badge/WebRTC-enabled-brightgreen)
+![GitHub Stars](https://img.shields.io/github/stars/ymmtshch/TimeLapseCamera?style=social)
+![Last Commit](https://img.shields.io/github/last-commit/ymmtshch/TimeLapseCamera)
+![GitHub Issues](https://img.shields.io/github/issues/ymmtshch/TimeLapseCamera)
+![GitHub Forks](https://img.shields.io/github/forks/ymmtshch/TimeLapseCamera?style=social)
 
 # 📷 タイムラプスカメラアプリ
 
