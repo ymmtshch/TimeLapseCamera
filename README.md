@@ -1,7 +1,9 @@
 ![](https://img.shields.io/github/created-at/ymmtshch/TimeLapseCamera)
 ![](https://img.shields.io/github/languages/code-size/ymmtshch/TimeLapseCamera)
-![](https://img.shields.io/github/license/ymmtshch/TimeLapseCamera)
 ![](https://img.shields.io/github/languages/top/ymmtshch/TimeLapseCamera)
+![](https://img.shields.io/github/license/ymmtshch/TimeLapseCamera)
+![Python](https://img.shields.io/badge/python-3.7%20%7C%203.8%20%7C%203.9-blue)
+
 
 # 📷 タイムラプスカメラアプリ
 
