@@ -1,3 +1,6 @@
+https://img.shields.io/github/languages/code-size/ymmtshch/TimeLapseCamera
+
+
 # 📷 タイムラプスカメラアプリ
 
 このアプリは、WebRTCとStreamlitを使用してタイムラプス動画の作成を行うインタラクティブなツールです。
