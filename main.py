@@ -93,23 +93,32 @@ if st.button("保存した画像zipをダウンロード"):
 
 # GIFアニメーションを作成してダウンロードする機能
 if st.button("GIFアニメーションを作成してダウンロード"):
+    import re  # 正規表現を使用して秒数を抽出
+
+    # 画像ファイルを取得し、名前に基づいてソートする
     image_files = [os.path.join(SAVE_DIR, f) for f in os.listdir(SAVE_DIR) if f.endswith(".jpg")]
-    images = []
-    
+
+    def extract_seconds(file_name):
+        # ファイル名から「_xx-sec」を抽出し、秒数を数値として返す
+        match = re.search(r'_(\d+)-sec\.jpg$', file_name)
+        return int(match.group(1)) if match else 0
+
+    # 秒数でソート
+    image_files.sort(key=extract_seconds)
+
     # 最初の画像のサイズを基準にする
     base_img = Image.open(image_files[0])
-    base_size = base_img.size  # 基準となるサイズを取得
-    
-    for image_file in sorted(image_files):  # 画像を名前順にソート
+    base_size = base_img.size
+
+    images = []
+    for image_file in image_files:
         img = Image.open(image_file)
-        
-        # すべての画像を基準サイズにリサイズ
-        img_resized = img.resize(base_size)
+        img_resized = img.resize(base_size)  # サイズを統一
         images.append(img_resized)
 
     gif_filename = "timelapse_animation.gif"
     images[0].save(gif_filename, save_all=True, append_images=images[1:], loop=0, duration=500)
-    
+
     with open(gif_filename, "rb") as gif_file:
         st.download_button(
             label="GIFアニメーションをダウンロード",
