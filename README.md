@@ -66,6 +66,19 @@ source venv/bin/activate
 ```bash
 pip install -r requirements.txt
 ```
+※`Failed building wheel for av`の場合は、下記も試してみてください。
+#### Windowsの場合:
+```bash
+pip install av
+```
+#### Linux/Ubuntuの場合:
+```bash
+sudo apt update
+sudo apt install -y ffmpeg libavcodec-dev libavformat-dev libavdevice-dev build-essential
+```
+```bash
+pip install av
+```
 
 ### 4. アプリを起動する
 仮想環境を有効にした状態で、以下のコマンドを実行してアプリを起動します。
