@@ -55,10 +55,6 @@ python -m venv venv
 ```bash
 venv\Scripts\activate
 ```
-#### macOS/Linuxの場合:
-```bash
-source venv/bin/activate
-```
 仮想環境が有効になると、コマンドラインの先頭に'(venv)'と表示されます。
 
 ### 3. 必要なライブラリをインストールする
@@ -68,14 +64,6 @@ pip install -r requirements.txt
 ```
 ※`Failed building wheel for av`の場合は、下記も試してみてください。
 #### Windowsの場合:
-```bash
-pip install av
-```
-#### Linux/Ubuntuの場合:
-```bash
-sudo apt update
-sudo apt install -y ffmpeg libavcodec-dev libavformat-dev libavdevice-dev build-essential
-```
 ```bash
 pip install av
 ```
