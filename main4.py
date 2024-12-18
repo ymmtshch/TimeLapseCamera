@@ -1,3 +1,10 @@
+"""
+This script is recommended for use if you want to create a GIF animation after the capture by adding it to the main3.py process.
+Selecting camera_list = [0] uses the internal camera supplied with the PC, selecting camera_list = [1] uses the USB camera.
+Changes since main3.py.
+(i) After taking a time-lapse video, a GIF animation is automatically generated using the images in the specified folder.
+"""
+
 import streamlit as st
 import cv2
 import os
