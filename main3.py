@@ -69,7 +69,7 @@ if start_button:
         # Capture image at specified intervals
         if current_time >= next_capture_time:
             elapsed_time = int(current_time - start_time)  # Calculate elapsed time in seconds
-            file_name = f"{file_name_prefix}-{elapsed_time:03d}-sec.jpg"
+            file_name = f"{file_name_prefix}-{elapsed_time:04d}-sec.jpg"
             img_filename = os.path.join(output_folder, file_name)
             cv2.imwrite(img_filename, frame)
             st.write(f"Captured {img_filename}")
