@@ -2,42 +2,45 @@
 ![License](https://img.shields.io/badge/license-MIT-green)
 ![Streamlit](https://img.shields.io/badge/streamlit-%E2%AC%9B-orange)
 ![dependencies](https://img.shields.io/badge/dependencies-up%20to%20date-brightgreen)
-![WebRTC](https://img.shields.io/badge/WebRTC-enabled-brightgreen)
 ![GitHub Stars](https://img.shields.io/github/stars/ymmtshch/TimeLapseCamera?style=social)
 ![Last Commit](https://img.shields.io/github/last-commit/ymmtshch/TimeLapseCamera)
 ![GitHub Issues](https://img.shields.io/github/issues/ymmtshch/TimeLapseCamera)
 ![GitHub Forks](https://img.shields.io/github/forks/ymmtshch/TimeLapseCamera?style=social)
 
-# 📷 タイムラプスカメラアプリ
+# 📷 タイムラプスカメラアプリとGIF作成アプリ
 
-このアプリは、WebRTCとStreamlitを使用してタイムラプス動画の作成を行うインタラクティブなツールです。
-一定の間隔で画像をキャプチャし、保存した画像をzip形式またはGIFアニメーションとしてダウンロードできます。
-環境構築が上手くいかなかったら、簡素化verである`main2.py`をご使用いただけますでしょうか。
-デスクトップ上にデータを保存したくなったら`main3.py`を選択してみてください。これはより動作が速くなるように工夫しています。
+このアプリは、StreamlitとOpenCVを使用してタイムラプス撮影を行い、キャプチャ画像からGIFアニメーションを作成できるツールです。
+カメラを指定して一定間隔で画像を保存し、GIFとしてダウンロードすることができます。(`main.py`)
+通信状態が不安定であったり、スタンドアローンで使用したい場合は `main2.py` を使用してみてね。StreamlitのようなUIで使用したい人は、デスクトップアプリが`dist`に保存してあるよ。
 
 ## 📄 概要
 
-本アプリケーションの主な機能：
-- WebRTCを用いたリアルタイムビデオストリーム
-- ユーザーが指定した撮影間隔での自動キャプチャ
-- ~~画像のプレフィックス設定機能（名前を自由に設定可能）~~　名前は`name_●●-sec`で、●●に経過時間が入るよ
-- 保存した画像のzip形式での一括ダウンロード
-- 撮影した画像をGIFアニメーションに変換してダウンロード
+主な機能：
+- USBカメラを選択してタイムラプス撮影を開始
+- サイドバーで撮影間隔（秒）や撮影時間（分）を指定可能
+- ユーザー指定のフォルダに画像を保存
+- 撮影した画像をGIFアニメーションに変換し、ローカルに保存またはダウンロード
+- 撮影中のプレビュー表示
 
 ---
 
 ## 🚀 アプリの使用方法
 
-### 1. 撮影間隔の設定
-サイドバーから撮影間隔（秒単位）を設定し、画像ファイル名のプレフィックスも入力してください。
+### 1. サイドバーで設定を入力
+- **カメラの選択**: 接続しているUSBカメラの番号を指定します（例: 0, 1）。
+- **ファイル名のプレフィックス**: 保存する画像やGIFの名前を指定します（例: `timelapse`）。
+- **撮影間隔**: キャプチャする間隔を1～60秒で指定します。
+- **撮影時間**: 全体の撮影時間を1～90分で指定します。
 
-### 2. WebRTCストリームの開始
-アプリケーションの中心にあるボタンを押してWebRTCストリームを開始します。
+### 2. タイムラプス撮影を開始
+- 「Start Capture」をクリックすると、設定に基づいて撮影が開始されます。
+- 撮影中は、ライブカメラプレビューが表示されます。
+- 撮影を終了したい場合は「Stop Capture」をクリックします。
 
-### 3. 画像の保存とダウンロード
-キャプチャされた画像は自動的に保存されます。ストリーム終了後、以下のダウンロードオプションを利用できます：
-- **zip形式でダウンロード**: すべての画像をまとめて一括ダウンロード。
-- **GIFアニメーションでダウンロード**: すべてのキャプチャ画像をGIFに変換し、アニメーションとしてダウンロード。
+### 3. GIFアニメーションを作成
+- 撮影終了後、「Create GIF from Images」ボタンをクリックしてGIFを生成します。
+- 作成されたGIFはダウンロードフォルダに保存されます。
+- GIFが成功すると「Download GIF」ボタンでダウンロードが可能です。
 
 ---
 
@@ -63,11 +66,6 @@ venv\Scripts\activate
 仮想環境内で以下のコマンドを実行し、必要なライブラリをインストールします。
 ```bash
 pip install -r requirements.txt
-```
-※`Failed building wheel for av`の場合は、下記も試してみてください。
-#### Windowsの場合:
-```bash
-pip install av
 ```
 
 ### 4. アプリを起動する
@@ -105,23 +103,9 @@ WebRTCのビデオフレームを受信し、一定の間隔で画像を保存�
 - すべてのキャプチャ画像は、実行ディレクトリのtimelapse_images/フォルダに保存されます。
 
 ## 🌟 注意事項
-- キャプチャ間隔は1秒から3600秒までの間で設定可能です。
-- GIF作成時の画像サイズは、最初のキャプチャ画像に基づいて調整されます。
-- すべてのキャプチャ画像は、実行ディレクトリのtimelapse_images/フォルダに保存されます。
-- ファイル名の`name_●●-sec.jpg`を一括で変更したい場合は、ローカルに落とした後に`PowerShell`を使う方法があります。
-#### ファイル名を自力で変更する方法
-1. 名前を変更するファイルが格納されたフォルダを開く。
-2. Shiftキーを押しながら右クリック→「PowerShellウィンドウをここで開く」を選択する。
-3. コードをコピーし、PowerShellウィンドウ上にて右クリックでペーストする。
-4. Enterキーを押してコードを実行する。
-```bash
-Get-ChildItem -Filter "name_*-sec.jpg" | 
-ForEach-Object {
-    $newName = $_.Name -replace "^name_", "SampleName_"
-    Rename-Item $_.FullName $newName
-}
-```
-※"SampleName_"を変更したい名前に代えて使用してください。
+- 保存される画像はスクリプト実行フォルダ内の指定フォルダに格納されます。
+- 撮影中にエラーが発生した場合は、カメラ設定やフォルダの書き込み権限を確認してください。
+- GIF作成時にはフォルダ内の画像を昇順に並べます。ファイル名形式に基づいて処理されるため、他のファイルが混ざらないよう注意してください。
 
 ## 📜 ライセンス
 このプロジェクトのライセンスはMITライセンスです、詳細は`LICENSE.txt`をご覧ください。
