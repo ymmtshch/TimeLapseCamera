@@ -10,22 +10,20 @@ import cv2
 import os
 import time
 from PIL import Image, ImageFile
+import re
+
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
+# Function to extract the number from a filename for sorting
 def extract_number_from_filename(filename):
-    # ファイル名から最後の数字を抽出する関数
-    import re
     match = re.search(r'_(\d+)-sec', filename)
     return int(match.group(1)) if match else float('inf')
 
+# Function to create GIF animation
 def create_gif(input_folder, output_gif, duration=500):
-    """
-    指定したフォルダ内の画像を使ってGIFを生成する。
-    """
     images = []
-    size = (1920, 1080)  # 解像度を固定
+    size = (1920, 1080)  # Fixed resolution
 
-    # ファイルを抽出し、名前に基づいてソート
     sorted_files = sorted(os.listdir(input_folder), key=extract_number_from_filename)
 
     for file_name in sorted_files:
@@ -33,43 +31,45 @@ def create_gif(input_folder, output_gif, duration=500):
             file_path = os.path.join(input_folder, file_name)
             try:
                 img = Image.open(file_path)
-                img = img.convert("RGBA").resize(size, Image.LANCZOS)
+                img.load()
+                img = img.convert("RGBA")
+                img = img.resize(size, Image.LANCZOS)
                 images.append(img)
             except OSError as e:
-                print(f"破損または無効な画像: {file_name} - {e}")
+                st.warning(f"Invalid or corrupted image skipped: {file_name}")
 
-    if images:
-        images[0].save(
-            output_gif,
-            save_all=True,
-            append_images=images[1:],
-            duration=duration,
-            loop=0,
-            optimize=True,
-            colors=256
-        )
-        print(f"GIFが作成されました: {output_gif}")
-    else:
-        print("有効な画像が見つかりませんでした。")
+    if not images:
+        st.error("No valid images found in the folder.")
+        return None
+
+    images[0].save(
+        output_gif,
+        save_all=True,
+        append_images=images[1:],
+        duration=duration,
+        loop=0,
+        optimize=True,
+        colors=256
+    )
+    return output_gif
 
 # Streamlit camera input
-st.title("Time-Lapse Camera")
+st.title("Time-Lapse Camera and GIF Creator")
 st.sidebar.header("Settings")
 
 # Camera selection
-camera_list = [0, 1, 2, 3]  # Add the number of USB cameras you want to select
+camera_list = [0, 1]  # Add the number of USB cameras you want to select
 camera_index = st.sidebar.selectbox("Select Camera", camera_list)
 
-# User-defined file name
+# User-defined file name (used for both folder and file naming)
 file_name_prefix = st.sidebar.text_input("Enter file name prefix (e.g., 'timelapse')", "timelapse")
 
 # Camera settings
 capture_interval = st.sidebar.slider("Capture Interval (seconds)", 1, 60, 10)
 duration = st.sidebar.slider("Duration (minutes)", 1, 90, 5)
 
-# Set Desktop directory for saving files
-desktop_path = os.path.join(os.environ["USERPROFILE"], "Desktop")
-output_folder = os.path.join(desktop_path, file_name_prefix)
+# Set output directory relative to the script's location
+output_folder = os.path.join(os.getcwd(), file_name_prefix)
 if not os.path.exists(output_folder):
     os.makedirs(output_folder)
 
@@ -114,7 +114,7 @@ if start_button:
         # Capture image at specified intervals
         if current_time >= next_capture_time:
             elapsed_time = int(current_time - start_time)  # Calculate elapsed time in seconds
-            file_name = f"{file_name_prefix}-{elapsed_time:03d}-sec.jpg"
+            file_name = f"{file_name_prefix}-{elapsed_time:04d}-sec.jpg"  # 4桁にゼロパディング
             img_filename = os.path.join(output_folder, file_name)
 
             # Attempt to write the image
@@ -124,8 +124,6 @@ if start_button:
                 st.write(f"Captured {img_filename}")
             else:
                 st.error(f"Error: Failed to write image to {img_filename}.")
-                st.write(f"Output folder: {output_folder}")
-                st.write(f"Frame type: {type(frame)} | Frame shape: {frame.shape if frame is not None else 'None'}")
 
             next_capture_time += capture_interval
 
@@ -135,13 +133,23 @@ if start_button:
 
     cap.release()
 
-    # GIF生成処理を呼び出し
-    st.write("Generating GIF animation...")
-    output_gif = os.path.join(output_folder, "output_animation.gif")
-    create_gif(output_folder, output_gif, duration=500)
-    st.write(f"GIF animation created: {output_gif}")
-
 elif stop_button:
     st.write("Capture not started yet.")
 
-st.write("Time-lapse capture complete.")
+# GIF creation
+gif_button = st.button("Create GIF from Images")
+if gif_button:
+    # Set the download folder path for the GIF
+    download_folder = os.path.join(os.path.expanduser("~"), "Downloads")
+    gif_output_path = os.path.join(download_folder, f"{file_name_prefix}.gif")
+    
+    gif_result = create_gif(output_folder, gif_output_path, duration=500)
+    if gif_result:
+        st.success(f"GIF created successfully: {gif_result}")
+        with open(gif_result, "rb") as gif_file:
+            st.download_button(
+                label="Download GIF",
+                data=gif_file,
+                file_name=f"{file_name_prefix}.gif",
+                mime="image/gif"
+            )
